@@ -79,7 +79,6 @@ namespace EthTool {
 			this->textBoxDestAddr->Name = L"textBoxDestAddr";
 			this->textBoxDestAddr->Size = System::Drawing::Size(100, 20);
 			this->textBoxDestAddr->TabIndex = 0;
-			this->textBoxDestAddr->Text = L"192.168.2.239";
 			this->textBoxDestAddr->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
 			// button1
@@ -100,7 +99,6 @@ namespace EthTool {
 			this->textBoxDestPort->Name = L"textBoxDestPort";
 			this->textBoxDestPort->Size = System::Drawing::Size(100, 20);
 			this->textBoxDestPort->TabIndex = 3;
-			this->textBoxDestPort->Text = L"666";
 			this->textBoxDestPort->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
 			// textBoxPayload
@@ -109,7 +107,6 @@ namespace EthTool {
 			this->textBoxPayload->Name = L"textBoxPayload";
 			this->textBoxPayload->Size = System::Drawing::Size(100, 20);
 			this->textBoxPayload->TabIndex = 4;
-			this->textBoxPayload->Text = L"fucks yeah";
 			this->textBoxPayload->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
 			// label1
