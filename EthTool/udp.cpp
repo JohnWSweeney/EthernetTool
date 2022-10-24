@@ -1,7 +1,5 @@
 #include "udp.h"
 
-
-
 void sendUDP(const char* IP, int portNum, std::string msg)
 {
 	//Initiate Winsock dll.
@@ -34,4 +32,9 @@ void sendUDP(const char* IP, int portNum, std::string msg)
 	//Terminate Winsock dll.
 	WSACleanup();
 	std::cout << "Clean up success" << std::endl;
+};
+
+void listenUDP()
+{
+
 };
