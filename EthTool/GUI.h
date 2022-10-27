@@ -47,8 +47,10 @@ namespace EthTool {
 	private: System::Windows::Forms::Button^  buttonListenUDP;
 	private: System::Windows::Forms::TextBox^  textBoxListenMsgUDP;
 	private: System::Windows::Forms::TextBox^  textBoxListenPort;
-	private: System::Windows::Forms::Label^  label1;
-	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::Label^  labelListenMsg;
+
+	private: System::Windows::Forms::Label^  labelListenPort;
+
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -72,8 +74,8 @@ namespace EthTool {
 			this->buttonListenUDP = (gcnew System::Windows::Forms::Button());
 			this->textBoxListenMsgUDP = (gcnew System::Windows::Forms::TextBox());
 			this->textBoxListenPort = (gcnew System::Windows::Forms::TextBox());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->labelListenMsg = (gcnew System::Windows::Forms::Label());
+			this->labelListenPort = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// textBoxDestAddr
@@ -90,7 +92,7 @@ namespace EthTool {
 				static_cast<System::Byte>(0)));
 			this->buttonSendUDP->Location = System::Drawing::Point(143, 100);
 			this->buttonSendUDP->Name = L"buttonSendUDP";
-			this->buttonSendUDP->Size = System::Drawing::Size(100, 23);
+			this->buttonSendUDP->Size = System::Drawing::Size(100, 27);
 			this->buttonSendUDP->TabIndex = 1;
 			this->buttonSendUDP->Text = L"Send";
 			this->buttonSendUDP->UseVisualStyleBackColor = true;
@@ -154,7 +156,7 @@ namespace EthTool {
 				static_cast<System::Byte>(0)));
 			this->buttonListenUDP->Location = System::Drawing::Point(383, 100);
 			this->buttonListenUDP->Name = L"buttonListenUDP";
-			this->buttonListenUDP->Size = System::Drawing::Size(100, 23);
+			this->buttonListenUDP->Size = System::Drawing::Size(100, 27);
 			this->buttonListenUDP->TabIndex = 8;
 			this->buttonListenUDP->Text = L"Listen";
 			this->buttonListenUDP->UseVisualStyleBackColor = true;
@@ -176,37 +178,37 @@ namespace EthTool {
 			this->textBoxListenPort->TabIndex = 10;
 			this->textBoxListenPort->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
-			// label1
+			// labelListenMsg
 			// 
-			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->labelListenMsg->AutoSize = true;
+			this->labelListenMsg->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label1->Location = System::Drawing::Point(298, 72);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(78, 20);
-			this->label1->TabIndex = 12;
-			this->label1->Text = L"Message:";
-			this->label1->TextAlign = System::Drawing::ContentAlignment::MiddleRight;
+			this->labelListenMsg->Location = System::Drawing::Point(298, 72);
+			this->labelListenMsg->Name = L"labelListenMsg";
+			this->labelListenMsg->Size = System::Drawing::Size(78, 20);
+			this->labelListenMsg->TabIndex = 12;
+			this->labelListenMsg->Text = L"Message:";
+			this->labelListenMsg->TextAlign = System::Drawing::ContentAlignment::MiddleRight;
 			// 
-			// label2
+			// labelListenPort
 			// 
-			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->labelListenPort->AutoSize = true;
+			this->labelListenPort->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label2->Location = System::Drawing::Point(287, 48);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(89, 20);
-			this->label2->TabIndex = 11;
-			this->label2->Text = L"Listen Port:";
-			this->label2->TextAlign = System::Drawing::ContentAlignment::MiddleRight;
+			this->labelListenPort->Location = System::Drawing::Point(287, 48);
+			this->labelListenPort->Name = L"labelListenPort";
+			this->labelListenPort->Size = System::Drawing::Size(89, 20);
+			this->labelListenPort->TabIndex = 11;
+			this->labelListenPort->Text = L"Listen Port:";
+			this->labelListenPort->TextAlign = System::Drawing::ContentAlignment::MiddleRight;
 			// 
 			// GUI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(495, 154);
-			this->Controls->Add(this->label1);
-			this->Controls->Add(this->label2);
+			this->Controls->Add(this->labelListenMsg);
+			this->Controls->Add(this->labelListenPort);
 			this->Controls->Add(this->textBoxListenPort);
 			this->Controls->Add(this->textBoxListenMsgUDP);
 			this->Controls->Add(this->buttonListenUDP);
@@ -224,6 +226,8 @@ namespace EthTool {
 
 		}
 #pragma endregion
+	bool listening = false;
+
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
 	{
 		// Destination IP address
@@ -244,7 +248,7 @@ namespace EthTool {
 		int portNum = System::Convert::ToInt16(textBoxListenPort->Text);
 		std::string msgRecvd = listenUDP(portNum);
 		String^ msg = gcnew String(msgRecvd.c_str());
-		textBoxListenMsgUDP->Text = msg;
+		//textBoxListenMsgUDP->Text = msg;
 	}
 };
 }

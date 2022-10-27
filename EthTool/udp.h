@@ -11,4 +11,3 @@
 
 void sendUDP(const char* IP, int portNum, std::string msg);
 std::string listenUDP(int portNum);
-void echoUDP();
