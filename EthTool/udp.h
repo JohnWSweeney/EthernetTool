@@ -10,5 +10,5 @@
 #pragma comment (lib, "Ws2_32.lib")
 
 void sendUDP(const char* IP, int portNum, std::string msg);
-std::string listenUDP();
+std::string listenUDP(int portNum);
 void echoUDP();

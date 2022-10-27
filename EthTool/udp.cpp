@@ -34,7 +34,7 @@ void sendUDP(const char* IP, int portNum, std::string msg)
 	std::cout << "Clean up success" << std::endl;
 };
 
-std::string listenUDP()
+std::string listenUDP(int portNum)
 {
 	//Initiate Winsock dll.
 	WSADATA WinSockData;
@@ -50,13 +50,13 @@ std::string listenUDP()
 	struct sockaddr_in listen;
 	listen.sin_family = AF_INET;
 	listen.sin_addr.s_addr = INADDR_ANY;
-	listen.sin_port = htons(666);
+	listen.sin_port = htons(portNum);
+
+	bind(UDPSocketServer, (SOCKADDR *)&listen, sizeof(listen));
 
 	char rxbuf[512] = { 0 };
 	int rxbuflen = sizeof(rxbuf);
 	int rxbytes = 0;
-
-	bind(UDPSocketServer, (SOCKADDR *)&listen, sizeof(listen));
 	
 	// RX
 	while(true)
@@ -64,7 +64,6 @@ std::string listenUDP()
 		rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
 		std::cout << "Payload:" << rxbuf << std::endl;
 		std::cout << "Payload size:" << rxbytes << std::endl;
-		//return rxbuf;
 	};
 
 	//Close socket.
