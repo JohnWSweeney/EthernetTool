@@ -49,6 +49,8 @@ namespace EthTool {
 	private: System::Windows::Forms::Label^  labelDstIP;
 	private: System::Windows::Forms::Label^  labelDstPort;
 	private: System::Windows::Forms::Label^  labelMessage;
+	private: System::Windows::Forms::Button^  buttonListenUDP;
+	private: System::Windows::Forms::TextBox^  textBoxListenMsgUDP;
 
 
 
@@ -75,6 +77,8 @@ namespace EthTool {
 			this->labelDstIP = (gcnew System::Windows::Forms::Label());
 			this->labelDstPort = (gcnew System::Windows::Forms::Label());
 			this->labelMessage = (gcnew System::Windows::Forms::Label());
+			this->buttonListenUDP = (gcnew System::Windows::Forms::Button());
+			this->textBoxListenMsgUDP = (gcnew System::Windows::Forms::TextBox());
 			this->SuspendLayout();
 			// 
 			// textBoxDestAddr
@@ -149,11 +153,33 @@ namespace EthTool {
 			this->labelMessage->Text = L"Message:";
 			this->labelMessage->TextAlign = System::Drawing::ContentAlignment::MiddleRight;
 			// 
+			// buttonListenUDP
+			// 
+			this->buttonListenUDP->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->buttonListenUDP->Location = System::Drawing::Point(339, 100);
+			this->buttonListenUDP->Name = L"buttonListenUDP";
+			this->buttonListenUDP->Size = System::Drawing::Size(75, 23);
+			this->buttonListenUDP->TabIndex = 8;
+			this->buttonListenUDP->Text = L"Listen";
+			this->buttonListenUDP->UseVisualStyleBackColor = true;
+			this->buttonListenUDP->Click += gcnew System::EventHandler(this, &GUI::buttonListenUDP_Click);
+			// 
+			// textBoxListenMsgUDP
+			// 
+			this->textBoxListenMsgUDP->Location = System::Drawing::Point(324, 72);
+			this->textBoxListenMsgUDP->Name = L"textBoxListenMsgUDP";
+			this->textBoxListenMsgUDP->Size = System::Drawing::Size(100, 20);
+			this->textBoxListenMsgUDP->TabIndex = 9;
+			this->textBoxListenMsgUDP->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			// 
 			// GUI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(261, 154);
+			this->ClientSize = System::Drawing::Size(495, 154);
+			this->Controls->Add(this->textBoxListenMsgUDP);
+			this->Controls->Add(this->buttonListenUDP);
 			this->Controls->Add(this->labelMessage);
 			this->Controls->Add(this->labelDstPort);
 			this->Controls->Add(this->labelDstIP);
@@ -181,5 +207,11 @@ namespace EthTool {
 
 		sendUDP(IP, portNum, msg);
 	}
-	};
+	private: System::Void buttonListenUDP_Click(System::Object^  sender, System::EventArgs^  e)
+	{
+		std::string msg = listenUDP();
+		String^ asdf = gcnew String(msg.c_str());
+		textBoxListenMsgUDP->Text = asdf;
+	}
+};
 }

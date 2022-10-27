@@ -10,7 +10,7 @@ void sendUDP(const char* IP, int portNum, std::string msg)
 
 	//Create socket.
 	UDPSocketClient = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	std::cout << "Socket opened." << std::endl;
+	std::cout << "Send socket opened." << std::endl;
 
 	//Struct with destination parameters.
 	struct sockaddr_in dest;
@@ -27,14 +27,51 @@ void sendUDP(const char* IP, int portNum, std::string msg)
 
 	//Close socket.
 	closesocket(UDPSocketClient);
-	std::cout << "Socket closed." << std::endl;
+	std::cout << "Send socket closed." << std::endl;
 
 	//Terminate Winsock dll.
 	WSACleanup();
 	std::cout << "Clean up success" << std::endl;
 };
 
-void listenUDP()
+std::string listenUDP()
 {
+	//Initiate Winsock dll.
+	WSADATA WinSockData;
+	SOCKET UDPSocketServer;
+	WSAStartup(MAKEWORD(2, 2), &WinSockData);
+	std::cout << "WSAStarup success" << std::endl;
 
+	//Create socket.
+	UDPSocketServer = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	std::cout << "Listen server socket opened." << std::endl;
+
+	//Struct with destination parameters.
+	struct sockaddr_in listen;
+	listen.sin_family = AF_INET;
+	listen.sin_addr.s_addr = INADDR_ANY;
+	listen.sin_port = htons(666);
+
+	char rxbuf[512] = { 0 };
+	int rxbuflen = sizeof(rxbuf);
+	int rxbytes = 0;
+
+	bind(UDPSocketServer, (SOCKADDR *)&listen, sizeof(listen));
+	
+	// RX
+	while(true)
+	{
+		rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
+		std::cout << "Payload:" << rxbuf << std::endl;
+		std::cout << "Payload size:" << rxbytes << std::endl;
+		//return rxbuf;
+	};
+
+	//Close socket.
+	closesocket(UDPSocketServer);
+	std::cout << "Socket closed." << std::endl;
+
+	//Terminate Winsock dll.
+	WSACleanup();
+	std::cout << "Clean up success" << std::endl;
 };
