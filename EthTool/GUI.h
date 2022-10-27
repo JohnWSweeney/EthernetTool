@@ -39,12 +39,7 @@ namespace EthTool {
 		}
 	private: System::Windows::Forms::TextBox^  textBoxDestAddr;
 	private: System::Windows::Forms::Button^  buttonSendUDP;
-	protected:
-
-
-
 	private: System::Windows::Forms::TextBox^  textBoxDestPort;
-
 	private: System::Windows::Forms::TextBox^  textBoxPayload;
 	private: System::Windows::Forms::Label^  labelDstIP;
 	private: System::Windows::Forms::Label^  labelDstPort;
@@ -54,12 +49,6 @@ namespace EthTool {
 	private: System::Windows::Forms::TextBox^  textBoxListenPort;
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Label^  label2;
-
-
-
-
-	protected:
-
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -235,7 +224,8 @@ namespace EthTool {
 
 		}
 #pragma endregion
-	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
+	{
 		// Destination IP address
 		String^ destAddr = System::Convert::ToString(textBoxDestAddr->Text);
 		std::string ip = msclr::interop::marshal_as<std::string>(destAddr);
