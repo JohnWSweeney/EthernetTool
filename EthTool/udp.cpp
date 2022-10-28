@@ -34,6 +34,46 @@ void sendUDP(const char* IP, int portNum, std::string msg)
 	std::cout << "Clean up success" << std::endl;
 };
 
+void streamUDP(const char* IP, int portNum)
+{
+	//Initiate Winsock dll.
+	WSADATA WinSockData;
+	SOCKET UDPSocketClient;
+	WSAStartup(MAKEWORD(2, 2), &WinSockData);
+	std::cout << "WSAStarup success" << std::endl;
+
+	//Create socket.
+	UDPSocketClient = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	std::cout << "Send socket opened." << std::endl;
+
+	//Struct with destination parameters.
+	struct sockaddr_in dest;
+	dest.sin_family = AF_INET;
+	dest.sin_addr.s_addr = inet_addr(IP);
+	dest.sin_port = htons(portNum);
+
+	// TX
+	int i = 0;
+	char buf[4];
+	char* ptr = buf;
+	int len = sizeof(buf);
+	while (i < 1000)
+	{
+		buf[0] = i;
+		sendto(UDPSocketClient, ptr, len, 0, (SOCKADDR *)& dest, sizeof(dest));
+		Sleep(100);
+		++i;
+	}
+
+	//Close socket.
+	closesocket(UDPSocketClient);
+	std::cout << "Send socket closed." << std::endl;
+
+	//Terminate Winsock dll.
+	WSACleanup();
+	std::cout << "Clean up success" << std::endl;
+};
+
 std::string listenUDP(int portNum)
 {
 	//Initiate Winsock dll.
