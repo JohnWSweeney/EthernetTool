@@ -41,7 +41,6 @@ namespace EthTool {
 	private: System::Windows::Forms::Button^  buttonSendUDP;
 	private: System::Windows::Forms::TextBox^  textBoxDestPort;
 	private: System::Windows::Forms::TextBox^  textBoxDestMsg;
-
 	private: System::Windows::Forms::Label^  labelDstIP;
 	private: System::Windows::Forms::Label^  labelDstPort;
 	private: System::Windows::Forms::Label^  labelMessage;
@@ -49,13 +48,10 @@ namespace EthTool {
 	private: System::Windows::Forms::TextBox^  textBoxListenMsgUDP;
 	private: System::Windows::Forms::TextBox^  textBoxListenPort;
 	private: System::Windows::Forms::Label^  labelListenMsg;
-
 	private: System::Windows::Forms::Label^  labelListenPort;
 	private: System::Windows::Forms::TabControl^  tabControlUDPvsTCP;
-
 	private: System::Windows::Forms::TabPage^  tabPage1;
 	private: System::Windows::Forms::TabControl^  tabControlUDPtypes;
-
 	private: System::Windows::Forms::TabPage^  tabPage3;
 	private: System::Windows::Forms::TabPage^  tabPage4;
 	private: System::Windows::Forms::TabPage^  tabPage5;
@@ -63,21 +59,13 @@ namespace EthTool {
 	private: System::Windows::Forms::ComboBox^  comboBox1;
 	private: System::Windows::Forms::CheckBox^  checkBoxDesc;
 	private: System::Windows::Forms::TextBox^  textBoxEndInt;
-
 	private: System::Windows::Forms::TextBox^  textBoxStartInt;
-
 	private: System::Windows::Forms::Label^  labelEndInt;
 	private: System::Windows::Forms::CheckBox^  checkBoxLoop;
 	private: System::Windows::Forms::Label^  labelStartInt;
 	private: System::Windows::Forms::Label^  labelLocalIP;
 	private: System::Windows::Forms::TextBox^  textBoxLocalIP;
-
 	private: System::ComponentModel::BackgroundWorker^  backgroundWorkerListenUDP;
-
-
-
-
-
 
 	private:
 		/// <summary>
@@ -462,7 +450,6 @@ namespace EthTool {
 		}
 #pragma endregion
 	bool listening = false;
-	//String^ comboBoxState;
 	bool desc;
 	bool loop;
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e)
@@ -507,8 +494,11 @@ namespace EthTool {
 private: System::Void backgroundWorkerListenUDP_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e)
 {
 	System::ComponentModel::BackgroundWorker^ workerListenUDP = dynamic_cast<BackgroundWorker^>(sender);
-	listenUDP(safe_cast<Int32>(e->Argument), workerListenUDP, e);
-
+	socketUDP listenUDP;
+	listenUDP.portNum= safe_cast<Int32>(e->Argument);
+	listenUDP.open();
+	listenUDP.listen(workerListenUDP, e);
+	//listenUDP.close();
 }
 
 };

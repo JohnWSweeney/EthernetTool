@@ -16,39 +16,63 @@ void listenUDP(int listenPortNumUDP, System::ComponentModel::BackgroundWorker^ w
 class socketUDP
 {
 public:
-	const char* IP;
 	int portNum;
-	std::string msg;
-	//void open();
-	//void tx();
-	//void close();
 
-//private:
-	SOCKET UDPSocketClient;
+	SOCKET UDPSocketServer;
 
 	void open()
 	{
 		//Initiate Winsock dll.
 		WSADATA WinSockData;
-
+		SOCKET UDPSocketServer;
 		WSAStartup(MAKEWORD(2, 2), &WinSockData);
 		std::cout << "WSAStarup success" << std::endl;
 
 		//Create socket.
-		UDPSocketClient = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-		std::cout << "Send socket opened." << std::endl;
+		UDPSocketServer = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		std::cout << "Listen server socket opened." << std::endl;
 
 		//Struct with destination parameters.
-		struct sockaddr_in sock;
-		sock.sin_family = AF_INET;
-		sock.sin_addr.s_addr = inet_addr(IP);
-		sock.sin_port = htons(portNum);
-	}
+		struct sockaddr_in listen;
+		listen.sin_family = AF_INET;
+		listen.sin_addr.s_addr = INADDR_ANY;
+		listen.sin_port = htons(portNum);
+
+		bind(UDPSocketServer, (SOCKADDR *)&listen, sizeof(listen));
+	};
+
+	void listen(System::ComponentModel::BackgroundWorker^ workerListenUDP, System::ComponentModel::DoWorkEventArgs ^ e)
+	{
+		char rxbuf[512] = { 0 };
+		int rxbuflen = sizeof(rxbuf);
+		int rxbytes;
+
+		do
+		{
+			if (workerListenUDP->CancellationPending)
+			{
+				e->Cancel = true;
+			}
+			else
+			{
+				rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
+				if (rxbytes > 0)
+				{
+					std::cout << "Payload:" << rxbuf << std::endl;
+					std::cout << "Payload size:" << rxbytes << std::endl;
+				}
+				else if (rxbytes == 0)
+				{
+					std::cout << "asdf" << std::endl;
+				}
+			}
+		} while (rxbytes > 0);
+	};
 
 	void close()
 	{
 		//Close socket.
-		closesocket(UDPSocketClient);
+		closesocket(UDPSocketServer);
 		std::cout << "Send socket closed." << std::endl;
 
 		//Terminate Winsock dll.
