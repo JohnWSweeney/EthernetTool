@@ -74,7 +74,7 @@ void streamUDP(const char* IP, int portNum)
 	std::cout << "Clean up success" << std::endl;
 };
 
-std::string listenUDP(int portNum)
+void listenUDP(int listenPortNumUDP, System::ComponentModel::BackgroundWorker^ workerListenUDP, System::ComponentModel::DoWorkEventArgs ^ e)
 {
 	//Initiate Winsock dll.
 	WSADATA WinSockData;
@@ -90,27 +90,34 @@ std::string listenUDP(int portNum)
 	struct sockaddr_in listen;
 	listen.sin_family = AF_INET;
 	listen.sin_addr.s_addr = INADDR_ANY;
-	listen.sin_port = htons(portNum);
+	listen.sin_port = htons(listenPortNumUDP);
 
 	bind(UDPSocketServer, (SOCKADDR *)&listen, sizeof(listen));
 
 	char rxbuf[512] = { 0 };
 	int rxbuflen = sizeof(rxbuf);
 	int rxbytes = 0;
-	
+
 	// RX
-	while(true)
+	for (;;)
 	{
-		rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
-		std::cout << "Payload:" << rxbuf << std::endl;
-		std::cout << "Payload size:" << rxbytes << std::endl;
-	};
+		if (workerListenUDP->CancellationPending)
+		{
+			e->Cancel = true;
+		}
+		else
+		{
+			rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
+			std::cout << "Payload:" << rxbuf << std::endl;
+			std::cout << "Payload size:" << rxbytes << std::endl;
+		}
+	}
 
-	//Close socket.
-	closesocket(UDPSocketServer);
-	std::cout << "Socket closed." << std::endl;
+	////Close socket.
+	//closesocket(UDPSocketServer);
+	//std::cout << "Socket closed." << std::endl;
 
-	//Terminate Winsock dll.
-	WSACleanup();
-	std::cout << "Clean up success" << std::endl;
+	////Terminate Winsock dll.
+	//WSACleanup();
+	//std::cout << "Clean up success" << std::endl;
 };

@@ -11,7 +11,7 @@
 
 void sendUDP(const char* IP, int portNum, std::string msg);
 void streamUDP(const char* IP, int portNum);
-std::string listenUDP(int portNum);
+void listenUDP(int listenPortNumUDP, System::ComponentModel::BackgroundWorker^ workerListenUDP, System::ComponentModel::DoWorkEventArgs ^ e);
 
 class socketUDP
 {

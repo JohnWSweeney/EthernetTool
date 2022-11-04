@@ -71,7 +71,9 @@ namespace EthTool {
 	private: System::Windows::Forms::Label^  labelStartInt;
 	private: System::Windows::Forms::Label^  labelLocalIP;
 	private: System::Windows::Forms::TextBox^  textBoxLocalIP;
-	private: System::Windows::Forms::Button^  buttonDummy;
+
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorkerListenUDP;
+
 
 
 
@@ -117,14 +119,13 @@ namespace EthTool {
 			this->labelLocalIP = (gcnew System::Windows::Forms::Label());
 			this->textBoxLocalIP = (gcnew System::Windows::Forms::TextBox());
 			this->tabPage5 = (gcnew System::Windows::Forms::TabPage());
-			this->buttonDummy = (gcnew System::Windows::Forms::Button());
 			this->tabPage2 = (gcnew System::Windows::Forms::TabPage());
+			this->backgroundWorkerListenUDP = (gcnew System::ComponentModel::BackgroundWorker());
 			this->tabControlUDPvsTCP->SuspendLayout();
 			this->tabPage1->SuspendLayout();
 			this->tabControlUDPtypes->SuspendLayout();
 			this->tabPage3->SuspendLayout();
 			this->tabPage4->SuspendLayout();
-			this->tabPage5->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// textBoxDestAddr
@@ -145,7 +146,7 @@ namespace EthTool {
 			this->buttonSendUDP->TabIndex = 1;
 			this->buttonSendUDP->Text = L"Send";
 			this->buttonSendUDP->UseVisualStyleBackColor = true;
-			this->buttonSendUDP->Click += gcnew System::EventHandler(this, &GUI::button1_Click);
+			//this->buttonSendUDP->Click += gcnew System::EventHandler(this, &GUI::button1_Click);
 			// 
 			// textBoxDestPort
 			// 
@@ -225,6 +226,7 @@ namespace EthTool {
 			this->textBoxListenPort->Name = L"textBoxListenPort";
 			this->textBoxListenPort->Size = System::Drawing::Size(100, 20);
 			this->textBoxListenPort->TabIndex = 10;
+			this->textBoxListenPort->Text = L"789";
 			this->textBoxListenPort->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
 			// labelListenMsg
@@ -418,23 +420,12 @@ namespace EthTool {
 			// 
 			// tabPage5
 			// 
-			this->tabPage5->Controls->Add(this->buttonDummy);
 			this->tabPage5->Location = System::Drawing::Point(4, 22);
 			this->tabPage5->Name = L"tabPage5";
 			this->tabPage5->Size = System::Drawing::Size(362, 185);
 			this->tabPage5->TabIndex = 2;
 			this->tabPage5->Text = L"Echo";
 			this->tabPage5->UseVisualStyleBackColor = true;
-			// 
-			// buttonDummy
-			// 
-			this->buttonDummy->Location = System::Drawing::Point(170, 82);
-			this->buttonDummy->Name = L"buttonDummy";
-			this->buttonDummy->Size = System::Drawing::Size(75, 23);
-			this->buttonDummy->TabIndex = 0;
-			this->buttonDummy->Text = L"Dummy";
-			this->buttonDummy->UseVisualStyleBackColor = true;
-			this->buttonDummy->Click += gcnew System::EventHandler(this, &GUI::button1_Click_1);
 			// 
 			// tabPage2
 			// 
@@ -445,6 +436,11 @@ namespace EthTool {
 			this->tabPage2->TabIndex = 1;
 			this->tabPage2->Text = L"TCP";
 			this->tabPage2->UseVisualStyleBackColor = true;
+			// 
+			// backgroundWorkerListenUDP
+			// 
+			this->backgroundWorkerListenUDP->WorkerSupportsCancellation = true;
+			this->backgroundWorkerListenUDP->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &GUI::backgroundWorkerListenUDP_DoWork);
 			// 
 			// GUI
 			// 
@@ -461,7 +457,6 @@ namespace EthTool {
 			this->tabPage3->PerformLayout();
 			this->tabPage4->ResumeLayout(false);
 			this->tabPage4->PerformLayout();
-			this->tabPage5->ResumeLayout(false);
 			this->ResumeLayout(false);
 
 		}
@@ -491,42 +486,29 @@ namespace EthTool {
 			buttonSendUDP->Text = L"Stream";
 		}
 	}
-	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
-	{
-		String^ comboBoxState = System::Convert::ToString(comboBox1->Text);
-		std::string comboState = msclr::interop::marshal_as<std::string>(comboBoxState);
-		desc = checkBoxDesc->Enabled;
-		loop = checkBoxLoop->Enabled;
-		std::cout << comboState << std::endl;
-		std::cout << loop << std::endl;
-		//// Destination IP address
-		//String^ destAddr = System::Convert::ToString(textBoxDestAddr->Text);
-		//std::string ip = msclr::interop::marshal_as<std::string>(destAddr);
-		//const char* IP = ip.c_str();
-		//// Destination Port
-		//int portNum = System::Convert::ToInt16(textBoxDestPort->Text);
-		//// Message
-		//String^ message = System::Convert::ToString(textBoxDestMsg->Text);
-		//std::string msg = msclr::interop::marshal_as<std::string>(message);
 
-		//sendUDP(IP, portNum, msg);
-	}
 	private: System::Void buttonListenUDP_Click(System::Object^  sender, System::EventArgs^  e)
 	{
-		// Listen Port
-		int portNum = System::Convert::ToInt16(textBoxListenPort->Text);
-		std::string msgRecvd = listenUDP(portNum);
-		String^ msg = gcnew String(msgRecvd.c_str());
-		//textBoxListenMsgUDP->Text = msg;
+		if (listening == false)
+		{
+			listening = true;
+			buttonListenUDP->Text = L"Listening";
+			int listenPortNumUDP = System::Convert::ToInt32(textBoxListenPort->Text);
+			this->backgroundWorkerListenUDP->RunWorkerAsync(listenPortNumUDP);
+		}
+		else
+		{
+			listening = false;
+			buttonListenUDP->Text = L"Listen";
+			this->backgroundWorkerListenUDP->CancelAsync();
+		}
 	}
 
-private: System::Void button1_Click_1(System::Object^  sender, System::EventArgs^  e)
+private: System::Void backgroundWorkerListenUDP_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e)
 {
-	socketUDP test;
-	test.IP = "192.168.2.114";
-	test.portNum = 6;
-	test.open();
-	test.close();
+	System::ComponentModel::BackgroundWorker^ workerListenUDP = dynamic_cast<BackgroundWorker^>(sender);
+	listenUDP(safe_cast<Int32>(e->Argument), workerListenUDP, e);
+
 }
 
 };
