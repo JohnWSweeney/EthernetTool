@@ -498,7 +498,7 @@ private: System::Void backgroundWorkerListenUDP_DoWork(System::Object^  sender, 
 	listenUDP.portNum= safe_cast<Int32>(e->Argument);
 	listenUDP.open();
 	listenUDP.listen(workerListenUDP, e);
-	//listenUDP.close();
+	listenUDP.close();
 }
 
 };
