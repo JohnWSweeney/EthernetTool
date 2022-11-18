@@ -46,33 +46,24 @@ public:
 
 	void listen(System::ComponentModel::BackgroundWorker^ workerListenUDP, System::ComponentModel::DoWorkEventArgs ^ e)
 	{
-		bool asdf = true;
 		char rxbuf[512] = { 0 };
 		int rxbuflen = sizeof(rxbuf);
 		int rxbytes;
 
-		while (asdf == true)
-		//while (true)
+		while (true)
 		{
-			std::cout << "rx" << std::endl;
 			if (workerListenUDP->CancellationPending)
 			{
-				std::cout << "cancelled" << std::endl;
-				asdf = false;
 				e->Cancel = true;
+				return;
 			}
-			else
+			rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
+			if (rxbytes > 0)
 			{
-				std::cout << "rxing" << rxbuf << std::endl;
-				rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
-				if (rxbytes > 0)
-				{
-					std::cout << "Payload:" << rxbuf << std::endl;
-					std::cout << "Payload size:" << rxbytes << std::endl;
-				}
+				std::cout << "Payload:" << rxbuf << std::endl;
+				std::cout << "Payload size:" << rxbytes << std::endl;
 			}
 		}
-			
 	};
 
 	void close()
