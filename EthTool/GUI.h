@@ -585,15 +585,15 @@ namespace EthTool {
 		}
 	}
 
-private: System::Void backgroundWorkerListenUDP_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e)
-{
-	System::ComponentModel::BackgroundWorker^ workerListenUDP = dynamic_cast<BackgroundWorker^>(sender);
-	socketUDP listenUDP;
-	listenUDP.portNum= safe_cast<Int32>(e->Argument);
-	listenUDP.open();
-	listenUDP.listen(workerListenUDP, e);
-	listenUDP.close();
-}
+	private: System::Void backgroundWorkerListenUDP_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e)
+	{
+		System::ComponentModel::BackgroundWorker^ workerListenUDP = dynamic_cast<BackgroundWorker^>(sender);
+		socketUDP listenUDP;
+		listenUDP.portNum= safe_cast<Int32>(e->Argument);
+		listenUDP.open();
+		listenUDP.listen(workerListenUDP, e);
+		listenUDP.close();
+	}
 
 };
 }

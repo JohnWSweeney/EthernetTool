@@ -21,6 +21,19 @@ public:
 	//WSADATA WinSockData;
 	SOCKET UDPSocketServer;
 
+	int socketReadStatus(SOCKET udpSocketServer, long s, long us)
+	{
+		FD_SET readfds;
+		FD_ZERO(&readfds);
+		FD_SET(udpSocketServer, &readfds);
+
+		timeval timeout;
+		timeout.tv_sec = s;
+		timeout.tv_usec = us;
+
+		return select(0, &readfds, 0, 0, &timeout);
+	}
+
 	void open()
 	{
 		//Initiate Winsock dll.
@@ -40,16 +53,12 @@ public:
 		listen.sin_port = htons(portNum);
 
 		bind(UDPSocketServer, (SOCKADDR *)&listen, sizeof(listen));
-
-		//return UDPSocketServer;
 	};
 
 	void listen(System::ComponentModel::BackgroundWorker^ workerListenUDP, System::ComponentModel::DoWorkEventArgs ^ e)
 	{
 		char rxbuf[512] = { 0 };
 		int rxbuflen = sizeof(rxbuf);
-		int rxbytes;
-
 		while (true)
 		{
 			if (workerListenUDP->CancellationPending)
@@ -57,11 +66,15 @@ public:
 				e->Cancel = true;
 				return;
 			}
-			rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
-			if (rxbytes > 0)
+			int rxReady = socketReadStatus(UDPSocketServer, 0, 1000);
+			if (rxReady > 0)
 			{
-				std::cout << "Payload:" << rxbuf << std::endl;
-				std::cout << "Payload size:" << rxbytes << std::endl;
+				int rxbytes = recv(UDPSocketServer, rxbuf, rxbuflen, 0);
+				if (rxbytes > 0)
+				{
+					std::cout << "Payload:" << rxbuf << std::endl;
+					std::cout << "Payload size:" << rxbytes << std::endl;
+				}
 			}
 		}
 	};
